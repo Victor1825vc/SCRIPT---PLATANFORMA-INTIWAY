@@ -1,0 +1,140 @@
+SELECT * FROM Reserva
+--RESERVAS TURISTICAS--
+
+
+
+
+--FORMULARIO PAGOS ELECTRONICOS
+CREATE TABLE Pagos (
+    Id INT IDENTITY PRIMARY KEY,
+    Cliente NVARCHAR(100) NOT NULL,
+    MetodoPago NVARCHAR(50) NOT NULL,
+    TipoServicio NVARCHAR(80),
+    Monto DECIMAL(10,2),
+    Direccion NVARCHAR(200),
+    Telefono NVARCHAR(20),
+    Correo NVARCHAR(100),
+    Fecha DATETIME DEFAULT GETDATE()
+);
+GO
+
+CREATE PROCEDURE sp_InsertPago
+    @Cliente NVARCHAR(100),
+    @Metodo NVARCHAR(50),
+    @Servicio NVARCHAR(80),
+    @Monto DECIMAL(10,2),
+    @Direccion NVARCHAR(200),
+    @Telefono NVARCHAR(20),
+    @Correo NVARCHAR(100),
+    @NewId INT OUTPUT
+AS
+BEGIN
+    INSERT INTO Pagos (Cliente, MetodoPago, TipoServicio, Monto, Direccion, Telefono, Correo)
+    VALUES (@Cliente, @Metodo, @Servicio, @Monto, @Direccion, @Telefono, @Correo);
+
+    SET @NewId = SCOPE_IDENTITY();
+END
+GO
+
+SELECT * FROM Pagos
+
+--FORMULARIO INSCRIBIR PROOVEDOR --
+
+
+-- Tabla Proveedor
+CREATE TABLE Proveedor (
+    IdProveedor INT IDENTITY PRIMARY KEY,
+    Nombre NVARCHAR(80) NOT NULL,
+    Correo NVARCHAR(120) NOT NULL,
+    Telefono NVARCHAR(20) NOT NULL,
+    Direccion NVARCHAR(120) NOT NULL,
+    Empresa NVARCHAR(80) NOT NULL,
+    TipoProveedor NVARCHAR(50) NOT NULL
+);
+GO
+
+-- Stored Procedure Insertar Proveedor
+CREATE PROCEDURE sp_InsertProveedor
+    @Nombre NVARCHAR(80),
+    @Correo NVARCHAR(120),
+    @Telefono NVARCHAR(20),
+    @Direccion NVARCHAR(120),
+    @Empresa NVARCHAR(80),
+    @TipoProveedor NVARCHAR(50),
+    @IdNew INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO Proveedor (Nombre, Correo, Telefono, Direccion, Empresa, TipoProveedor)
+    VALUES (@Nombre, @Correo, @Telefono, @Direccion, @Empresa, @TipoProveedor);
+
+    SELECT @IdNew = SCOPE_IDENTITY();
+END
+GO
+
+
+SELECT * FROM Proveedor
+
+
+---CHATBOT--
+
+USE TurismoDB;
+GO
+
+-- TABLA
+CREATE TABLE PreferenciaChat (
+    IdPreferencia INT IDENTITY PRIMARY KEY,
+    TipoTurismo NVARCHAR(50),
+    Presupuesto NVARCHAR(50),
+    Destino NVARCHAR(100),
+    Comentario NVARCHAR(200)
+);
+GO
+
+-- PROCEDIMIENTO
+CREATE PROCEDURE sp_InsertarPreferenciaChat
+    @TipoTurismo NVARCHAR(50),
+    @Presupuesto NVARCHAR(50),
+    @Destino NVARCHAR(100),
+    @Comentario NVARCHAR(200)
+AS
+BEGIN
+    INSERT INTO PreferenciaChat (TipoTurismo, Presupuesto, Destino, Comentario)
+    VALUES (@TipoTurismo, @Presupuesto, @Destino, @Comentario);
+END
+GO
+
+
+SELECT * FROM PreferenciaChat
+
+
+---GENERACION INTINERARIO PERSONALIZADO--
+USE TurismoDB;
+GO
+
+-- TABLA PARA GUARDAR ITINERARIOS PERSONALIZADOS
+CREATE TABLE ItinerarioPersonalizado (
+    IdItinerario INT IDENTITY PRIMARY KEY,
+    TipoTurismo NVARCHAR(50),
+    Actividades NVARCHAR(500),
+    Duracion NVARCHAR(50),
+    CostoAproximado NVARCHAR(50)
+);
+GO
+
+-- PROCEDIMIENTO ALMACENADO
+CREATE PROCEDURE sp_InsertItinerarioPersonalizado
+    @TipoTurismo NVARCHAR(50),
+    @Actividades NVARCHAR(500),
+    @Duracion NVARCHAR(50),
+    @CostoAproximado NVARCHAR(50)
+AS
+BEGIN
+    INSERT INTO ItinerarioPersonalizado (TipoTurismo, Actividades, Duracion, CostoAproximado)
+    VALUES (@TipoTurismo, @Actividades, @Duracion, @CostoAproximado);
+END
+GO
+
+
+SELECT * FROM ItinerarioPersonalizado
